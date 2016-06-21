@@ -115,7 +115,7 @@ wbot.on("message", function(message) {
 
 	    //Sends a message to all channels
 	    if(content.substr(0,11) == "!messageall"){
-	    	sendToAll(content.substr(12,content.length));
+	    	sendToAll(message.author.username+": "+content.substr(12,content.length));
 	    }
 
 	}
@@ -218,7 +218,7 @@ function getForecast(message){
 	  else{
 	      //console.log(JSON.stringify(result, null, 2));
 	      var weatherData = JSON.parse(JSON.stringify(result));
-	      var weatherString = "";
+	      var weatherString = "Location:" + weatherData[0].location.name + "\n\n";
 
 	      for(i = 0; i < weatherData[0].forecast.length; i++){
 	      	var high = "High: " + weatherData[0].forecast[i].high + "F\n";
