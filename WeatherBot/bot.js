@@ -132,10 +132,12 @@ wbot.on("message", function(message) {
 	    wbot.logout();
 	}
 
-	if(content === "!destroy"){
+	//console.log(message.author.id);
+	if(content === "!destroy" && message.author.id === "152981295616491520"){
 		sendToAll("Ym-Bot has disconnected");
-	    wbot.destroy();
-	    destroy = true;
+		destroy = true;
+		setTimeout(function(){wbot.destroy();}, 200);
+
 	}
 
 
