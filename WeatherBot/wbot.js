@@ -11,7 +11,7 @@ wbot.loginWithToken("MTk0NTM1NjI4NDgwNzA4NjA5.CknW7A.cyeEpC16MtQzU7qagUJZLJC27SM
 
 var destroy = false;
 var idle = false;
-var help = "\nEmote Commands:\n!yum\n!gib\n!shrug\n!fat\n!kyu\n!lennyface\n!sadface\n!ugh\n!fatlenny\n!retard\n!comfort\n\nFunctions:\nSet game: !playing [game]\nGo idle (no response): !idle\nGo online (change from idle): !online\nChange username: !username <new name>\nCurrent Weather: !weather <zip or city>\n5 Day Forecast: !forecast <zip or city>\nRelog: !relog\nShut down bot: !destroy\nMessage to all Channels: !messageall <message>\nMessage one Channel: !message <channel> <message>\n"
+var help = "\nEmote Commands:\n!yum\n!gib\n!shrug\n!fat\n!kyu\n!lennyface\n!sadface\n!ugh\n!fatlenny\n!retard\n!comfort\n!faceplam\n\nFunctions:\nSet game: !playing [game]\nGo idle (no response): !idle\nGo online (change from idle): !online\nChange username: !username <new name>\nCurrent Weather: !weather <zip or city>\n5 Day Forecast: !forecast <zip or city>\nRelog: !relog\nShut down bot: !destroy\nMessage to all Channels: !messageall <message>\nMessage one Channel: !message <channel> <message>\n"
 
 //var chan = new Discord.Channel();
 //On connection, say hi!
@@ -87,6 +87,10 @@ wbot.on("message", function(message) {
 	    	wbot.sendMessage(message.channel, "( T_T)＼(^-^ )");
 	    }
 
+	    if(content === "!facepalm"){
+	    	wbot.sendMessage(message.channel, "(ノ_＜)");
+	    }
+
 	    //Set status to idle. The bot will now ignore everything except !online.
 	    if(content === "!idle"){
 	    	wbot.setStatusIdle();
@@ -105,9 +109,13 @@ wbot.on("message", function(message) {
 	    	getWeather(message);
 	    }
 
-	    //Set username
+	    //Set username for some reason doesn't work?
 	    if(args[0] == "!username" && args.length>1){
-	    	wbot.setUsername(content.substr(10,content.length));
+	    	//console.log(content.substr(10,content.length));
+
+	    	wbot.setUsername({name: content.substr(10,content.length)},function(err){
+			console.log(err);
+			});
 	    }
 
 	    //!forecast
