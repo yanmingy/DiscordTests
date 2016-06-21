@@ -10,7 +10,7 @@ wbot.loginWithToken("MTk0NTM1NjI4NDgwNzA4NjA5.CknW7A.cyeEpC16MtQzU7qagUJZLJC27SM
 
 var destroy = false;
 var idle = false;
-var help = "\nEmote Commands:\n!yum\n!gib\n!shrug\n!fat\n!kyu\n!lennyface\n!sadface\n!ugh\n!fatlenny\n!retard\n!comfort\n\nFunctions:\nSet game: !playing [game]\nGo idle (no response): !idle\nGo online (change from idle): !online\nChange username: !username [new name]\nCurrent Weather: !weather [zip or city]\n5 Day Forecast: !forecast [zip or city]\nRelog: !relog\nShut down bot: !destroy\nMessage to all Channels: !messageall [message]\n"
+var help = "\nEmote Commands:\n!yum\n!gib\n!shrug\n!fat\n!kyu\n!lennyface\n!sadface\n!ugh\n!fatlenny\n!retard\n!comfort\n\nFunctions:\nSet game: !playing [game]\nGo idle (no response): !idle\nGo online (change from idle): !online\nChange username: !username <new name>\nCurrent Weather: !weather <zip or city>\n5 Day Forecast: !forecast <zip or city>\nRelog: !relog\nShut down bot: !destroy\nMessage to all Channels: !messageall <message>\nMessage one Channel: !message <channel> <message>\n"
 
 //var chan = new Discord.Channel();
 //On connection, say hi!
@@ -29,7 +29,7 @@ wbot.on("message", function(message) {
 		wbot.reply(message,help);
 	}
 
-	if(!idle){
+	if(!idle && message.author != wbot.user){
 
 		//console.log(message.author+" "+wbot.user);
 
@@ -38,7 +38,7 @@ wbot.on("message", function(message) {
 	        wbot.reply(message, "lenny");
 	    }
 
-	    if((content.search("ramen") != -1 || content.search("Ramen") !=-1) && message.author != wbot.user){
+	    if(content.search("ramen") != -1 || content.search("Ramen") !=-1){
 	    	wbot.reply(message, "One ramen please (      ͡      ͜ʖ      ͡     )");
 	    }
 
@@ -86,36 +86,43 @@ wbot.on("message", function(message) {
 	    	wbot.sendMessage(message.channel, "( T_T)＼(^-^ )");
 	    }
 
-	    //Set playing message
-	    if (content.substr(0,8) == "!playing"){
-	    	wbot.setPlayingGame(content.substr(9,content.length));
-	    }
-
 	    //Set status to idle. The bot will now ignore everything except !online.
 	    if(content === "!idle"){
 	    	wbot.setStatusIdle();
 	    	idle = true;
 	    }
 
+	    var args = content.split(" "); // split by space
+
+	    //Set playing message
+	    if (args[0] == "!playing"){
+	    	wbot.setPlayingGame(content.substr(9,content.length));
+	    }
+
 	    //!weather
-	    if(content.substr(0,8)=="!weather"){
+	    if(args[0]=="!weather" && args.length>1){
 	    	getWeather(message);
 	    }
 
-
 	    //Set username
-	    if(content.substr(0,9) == "!username"){
+	    if(args[0] == "!username" && args.length>1){
 	    	wbot.setUsername(content.substr(10,content.length));
 	    }
 
 	    //!forecast
-	    if(content.substr(0,9)=="!forecast"){
+	    if(args[0]=="!forecast" && args.length>1){
 	    	getForecast(message);
 	    }
 
 	    //Sends a message to all channels
-	    if(content.substr(0,11) == "!messageall"){
+	    if(args[0] == "!messageall" && args.length>1){
 	    	sendToAll(message.author.username+": "+content.substr(12,content.length));
+	    }
+
+	    //Sends a message to one channel
+	    if(args[0] == "!message" && args.length>2){
+
+	    	sendToChannel(message.author.username+": "+buildString(args,2) , args[1]);
 	    }
 
 	}
@@ -156,17 +163,43 @@ wbot.on("disconnected", function(){
 
 });
 
+//Returns a built string from the split words.
+function buildString(args, start){
+	var built = "";
+
+	for(i = start; i < args.length; i++){
+		built+=args[i]+" ";
+	}
+	return built.substr(0,built.length-1);
+}
+
 
 //Function for iterating through all channels and sending messages to each channel. Currently, there is no distinction between channels. All channels the bot is in will get the message.
 function sendToAll(text_message){
 	for(i = 0; i < wbot.servers.length; i++){
 		var channel = wbot.servers[i].channels;
 			for(j = 0; j < channel.length; j++){
-				if(channel[j].type === 'text'){
+				if(channel[j].type === 'text' && channel[j].name != "botcommands"){
 					wbot.sendMessage(channel[j], text_message);
 			}
 		}
 	}
+}
+
+//Sends to a specified channel.
+function sendToChannel(text_message, channel_name){
+	for(i = 0; i < wbot.servers.length; i++){
+		var channel = wbot.servers[i].channels;
+			for(j = 0; j < channel.length; j++){
+				if(channel[j].type === 'text' && channel[j].name == channel_name){
+					wbot.sendMessage(channel[j], text_message);
+					return;
+			}
+
+		}
+	}
+
+	wbot.sendMessage(message.channel,"Invalid Channel Name!")
 }
 
 
