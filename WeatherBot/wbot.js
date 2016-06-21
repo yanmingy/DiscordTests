@@ -1,4 +1,5 @@
 //The original weather bot?
+//https://discordapp.com/oauth2/authorize?client_id=194535326402871296&scope=bot&permissions=0
 
 var Discord = require("discord.js");
 var weather = require('weather-js');
