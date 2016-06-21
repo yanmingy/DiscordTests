@@ -133,7 +133,7 @@ wbot.on("message", function(message) {
 	}
 
 	if(content === "!destroy"){
-		wbot.sendToAll("Ym-Bot has disconnected");
+		sendToAll("Ym-Bot has disconnected");
 	    wbot.destroy();
 	    destroy = true;
 	}
@@ -161,7 +161,7 @@ function sendToAll(text_message){
 		var channel = wbot.servers[i].channels;
 			for(j = 0; j < channel.length; j++){
 				if(channel[j].type === 'text'){
-					wbot.sendMessage(channel[i], text_message);
+					wbot.sendMessage(channel[j], text_message);
 			}
 		}
 	}
