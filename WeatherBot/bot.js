@@ -133,6 +133,7 @@ wbot.on("message", function(message) {
 	}
 
 	if(content === "!destroy"){
+		wbot.sendToAll("Ym-Bot has disconnected");
 	    wbot.destroy();
 	    destroy = true;
 	}
@@ -144,7 +145,6 @@ wbot.on("message", function(message) {
 //Disconnect functionality. 
 wbot.on("disconnected", function(){
 
-	sendToAll("Ym-Bot has disconnected")
 	console.log("Bot has disconnected");
 
 	if(!destroy){
