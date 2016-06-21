@@ -112,10 +112,7 @@ wbot.on("message", function(message) {
 	    //Set username for some reason doesn't work?
 	    if(args[0] == "!username" && args.length>1){
 	    	//console.log(content.substr(10,content.length));
-
-	    	wbot.setUsername({name: content.substr(10,content.length)},function(err){
-			console.log(err);
-			});
+	    	wbot.setUsername(content.substr(10,content.length));
 	    }
 
 	    //!forecast
