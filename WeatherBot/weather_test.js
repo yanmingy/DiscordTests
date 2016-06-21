@@ -16,6 +16,8 @@ weather.find({search: '77433', degreeType: 'F'}, function(err, result) {
  
 
 });
+
+//Example console log output
 /*
 [
   {
