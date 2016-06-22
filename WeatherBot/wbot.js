@@ -1,6 +1,36 @@
 //The original weather bot?
 //https://discordapp.com/oauth2/authorize?client_id=194535326402871296&scope=bot&permissions=0
 
+/*
+Bot that does various emotes as well as tells the weather. 
+Emotes:
+!yum
+!gib
+!shrug
+!fat
+!kyu
+!lennyface
+!sadface
+!ugh
+!fatlenny
+!retard
+!comfort
+!facepalm
+
+Functions:
+!messageall <message>
+!idle
+!online
+!destroy
+!relog
+!forecast <area>
+!weather <area>
+!message <channel> <message>
+
+
+
+*/
+
 var Discord = require("discord.js");
 var weather = require('weather-js');
 
@@ -43,7 +73,7 @@ wbot.on("message", function(message) {
 	        wbot.reply(message, "No u");
 	    }
 
-	    if(content.search("ramen") != -1 || content.search("Ramen") !=-1){
+	    if(content.toLowerCase.search("ramen") != -1 ){
 	    	wbot.reply(message, "One ramen please (      ͡      ͜ʖ      ͡     )");
 	    }
 
