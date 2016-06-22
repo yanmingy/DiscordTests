@@ -18,7 +18,7 @@ var help = "\nEmote Commands:\n!yum\n!gib\n!shrug\n!fat\n!kyu\n!lennyface\n!sadf
 //Client.server is a cache of servers -> Cache of Server Channels 
 wbot.on("ready", function(){
 	console.log("Bot has connected");
-	sendToAll("Ym-Bot has connected. \nFor a list of commands type !ihavedown");
+	//sendToAll("Ym-Bot has connected. \nFor a list of commands type !ihavedown");
 });
 
 //On message functions
@@ -35,8 +35,12 @@ wbot.on("message", function(message) {
 		//console.log(message.author+" "+wbot.user);
 
 		//shortcuts
-	    if(content === "kek") {
+	    if(content.toLowerCase() === "kek") {
 	        wbot.reply(message, "lenny");
+	    }
+
+	    if(content.toLowerCase() === "kys") {
+	        wbot.reply(message, "No u");
 	    }
 
 	    if(content.search("ramen") != -1 || content.search("Ramen") !=-1){
@@ -102,6 +106,7 @@ wbot.on("message", function(message) {
 	    //Set playing message
 	    if (args[0] == "!playing"){
 	    	wbot.setPlayingGame(content.substr(9,content.length));
+	    	console.log("Playing message changed by " +message.author.username);
 	    }
 
 	    //!weather
@@ -113,6 +118,7 @@ wbot.on("message", function(message) {
 	    if(args[0] == "!username" && args.length>1){
 	    	//console.log(content.substr(10,content.length));
 	    	wbot.setUsername(content.substr(10,content.length));
+	    	console.log("Username changed by " + message.author.username);
 	    }
 
 	    //!forecast
@@ -137,18 +143,21 @@ wbot.on("message", function(message) {
 		if(content === "!online"){
 			wbot.setStatusOnline();
 			idle = false;
+			console.log("Gone Online by " + message.author.username);
 		}
 	}
 
 	//Global access regardless of status
 	if(content === "!relog"){
 	    wbot.logout();
+	    console.log("Relogging by " + message.author.username);
 	}
 
 	//console.log(message.author.id);
 	if(content === "!destroy" && message.author.id === "152981295616491520"){
-		sendToAll("Ym-Bot has disconnected");
+		sendToAll("Ym-Bot has been destroyed by " + message.author.username);
 		destroy = true;
+		console.log("Destroyed")
 		setTimeout(function(){wbot.destroy();}, 200);
 
 	}
