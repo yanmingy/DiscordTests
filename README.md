@@ -9,4 +9,10 @@ For weather functionality
 
 `npm install weather-js`
 
+For sound, install node-opus
+
+`npm install node-opus`
+
+You will also need ffmpeg bin added to PATH.
+
 
