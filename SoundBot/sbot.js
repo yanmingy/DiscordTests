@@ -51,9 +51,22 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
         leave(channelID, message.substr(7,message.length));
     }
 
-    if(args[0] === "$play"){
-        play(chan, message.substr(6,message.length));
-        console.log("Played at "+chan);
+    if (args[0] === "$play") {
+
+        fs.stat("sounds/" + message.substr(6, message.length)+".mp3", function (err, stats) {
+            if (err) {
+                console.log(err);
+                console.log("Tried to play something that DNE");
+                send_text(channelID, message.substr(6, message.length) + " does not exist");
+            }
+            else {
+                if (stats.isFile()) {
+                    play(chan, message.substr(6, message.length));
+                    console.log("Played " + message.substr(6, message.length) + "at " + chan);
+                }
+            }
+        });
+
     }
 
     if(message == "$stop"){
@@ -80,7 +93,7 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
             send_text(channelID, "URL needs to end with .mp3");
         }
         else if(sound_titles>=200){
-            send_text(channelID, "Too many sounds currently stored. Please delete some. Currently stored sounds: " + sound_titles + "/200");
+            send_text(channelID, "Too many sounds currently stored. Please delete some.\nCurrently stored sounds: " + sound_titles + "/200");
         }
         else{
             var name = buildString(args,2);
@@ -115,7 +128,7 @@ function deleteSound(name, channelID){
        }
        getSoundNames();
        console.log("File deleted successfully!");
-       send_text(channelID, name+".mp3 has been deleted. "+"Currently stored sounds: " + sound_length + "/200");
+       send_text(channelID, name+".mp3 has been deleted. "+"\nCurrently stored sounds: " + sound_length + "/200");
 
     });
 }
@@ -160,10 +173,17 @@ function leave(channelID, vcName){
 }
 
 //Saves a new mp3 files into the
-function saveFile(url,name, channelID) {
-    var http = require('https'),
+function saveFile(url, name, channelID) {
+    var req;
+    if (url.search("https") != -1) {
+        req = require('https');
+    }
+    else {
+        req = require('http');
+    }
 
-    request = http.get(url, function(response) {
+
+    request = req.get(url, function (response) {
         if (response.statusCode === 200) {
             var file = fs.createWriteStream("sounds/"+name+".mp3");
             response.pipe(file);
