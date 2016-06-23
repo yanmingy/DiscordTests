@@ -65,15 +65,15 @@ wbot.on("message", function(message) {
 		//console.log(message.author+" "+wbot.user);
 
 		//shortcuts
-	    if(content.toLowerCase === "kek") {
+	    if(content.toLowerCase() === "kek") {
 	        wbot.reply(message, "lenny");
 	    }
 
-	    if(content.toLowerCase === "kys") {
+	    if(content.toLowerCase() === "kys") {
 	        wbot.reply(message, "No u");
 	    }
 
-	    if(content.toLowerCase.search("ramen") != -1 ){
+	    if(content.toLowerCase().search("ramen") != -1 ){
 	    	wbot.reply(message, "One ramen please (      ͡      ͜ʖ      ͡     )");
 	    }
 
