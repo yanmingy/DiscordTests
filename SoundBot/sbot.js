@@ -193,7 +193,7 @@ function saveFile(url, name, channelID) {
             var file = fs.createWriteStream("sounds/"+name+".mp3");
             response.pipe(file);
             getSoundNames();
-            send_text(channelID, "Saved mp3: " +name;
+            send_text(channelID, "Saved mp3: " +name);
             console.log("Saved mp3: " +name;
         }
         // Add timeout.
