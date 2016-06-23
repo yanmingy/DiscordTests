@@ -187,8 +187,8 @@ function saveFile(url, name, channelID) {
         if (response.statusCode === 200) {
             var file = fs.createWriteStream("sounds/"+name+".mp3");
             response.pipe(file);
-            send_text(channelID, "Saved mp3: " +name+"\nStored sounds: "+sound_length+"/200");
             getSoundNames();
+            send_text(channelID, "Saved mp3: " +name+"\nStored sounds: "+sound_length+"/200");
             console.log("Saved mp3: " +name + ".mp3\nStored sounds: "+sound_length+"/200");
         }
         // Add timeout.
