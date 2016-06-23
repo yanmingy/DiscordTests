@@ -62,7 +62,7 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
             else {
                 if (stats.isFile()) {
                     play(chan, message.substr(6, message.length));
-                    console.log("Played " + message.substr(6, message.length) + "at " + chan);
+                    console.log("Played " + message.substr(6, message.length) + " at " + chan);
                 }
             }
         });
@@ -103,6 +103,11 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
 
     if(message.substr(0,3) == "$rm"){
         deleteSound(message.substr(4,message.length), channelID);
+    }
+
+    if(message == "$cnt"){
+        getSoundNames();
+        send_text(channelID, "Currently stored sounds: " + sound_length + "/200");
     }
 });
 
@@ -188,8 +193,8 @@ function saveFile(url, name, channelID) {
             var file = fs.createWriteStream("sounds/"+name+".mp3");
             response.pipe(file);
             getSoundNames();
-            send_text(channelID, "Saved mp3: " +name+"\nStored sounds: "+sound_length+"/200");
-            console.log("Saved mp3: " +name + ".mp3\nStored sounds: "+sound_length+"/200");
+            send_text(channelID, "Saved mp3: " +name;
+            console.log("Saved mp3: " +name;
         }
         // Add timeout.
         request.setTimeout(12000, function () {
