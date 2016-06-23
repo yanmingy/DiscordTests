@@ -156,7 +156,12 @@ function join(channelID, vcName){
             bot.joinVoiceChannel(channels[key].id);
             chan = channels[key].id;
             vname = vcName;
+            
             console.log("joined: "+chan);
+
+            setTimeout(function(){
+                play(chan, "hello");
+            }, 500);
         }
     });
 }
