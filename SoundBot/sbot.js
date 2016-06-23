@@ -27,6 +27,7 @@ var chan; //Currently in this voice channel.
 var vname; // Current voice channel name
 var sound_titles = "";
 var sound_length = 0;
+var terminate = false;
 
 
 bot.on('ready', function() {
@@ -34,6 +35,77 @@ bot.on('ready', function() {
     getSoundNames();
 
 });
+
+//Grabbing raw data
+bot.on('debug', function(rawEvent) { 
+//console.log(rawEvent["t"]);
+var data = rawEvent["d"];
+//console.log(rawEvent["d"]);
+if(data!=null && data!=undefined){
+    var user_id;
+    var channelID;
+    var guild_id;
+
+    Object.keys(rawEvent["d"]).forEach(function(key) {
+
+        if(key == "user_id"){
+            user_id = data[key];
+
+        }
+        else if(key == "channel_id"){
+            channelID = data[key];
+
+        }
+        else if(key == "guild_id"){
+            guild_id = data[key];
+
+        }
+
+    });
+
+    //Do this outside of the loop.
+
+    if(rawEvent["t"] == "VOICE_STATE_UPDATE"){
+        if(user_id == bot.id){
+            console.log(user_id + " user_id");
+            console.log(channelID + " channelID");
+            console.log(guild_id + " guild_id");
+            console.log("\n");
+           //console.log(key);
+           //console.log(data[key]);
+            //var server = bot.channels[channelID].guild_id;
+            var channels = bot.servers[guild_id].channels;
+            //console.log(bot.servers);
+
+            Object.keys(channels).forEach(function(key2) {
+
+                if(channels[key2].id == channelID){
+                    console.log(channels[key2].name);
+                    vname = channels[key2].name;
+                    chan = channelID;
+
+                    setTimeout(function(){
+                        play(chan, "hello");
+                    }, 500);
+
+                    console.log("joined: "+chan);
+                }
+            });
+
+
+        }
+    }
+}
+});
+
+//When discord updates, it auto disconnects the bot, this auto reconnects it.
+bot.on('disconnect', function(errMsg, code) {
+    if(!terminate){
+        bot.connect();
+        console.log("Auto Reconnect");       
+    }
+
+ });
 
 bot.on('message', function(user, userID, channelID, message, rawEvent) {
 
@@ -75,7 +147,9 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
 
     if(message == "$disconnect"){
         leave(channelID, vname);
+        terminate = true;
         bot.disconnect();
+
     }
 
     if(message == "$help"){
@@ -148,20 +222,12 @@ function send_text(channelID, text_message){
 
 //Joins a specified voice channel.
 function join(channelID, vcName){
-    var server = bot.channels[channelID].guild_id
+    var server = bot.channels[channelID].guild_id;
     var channels = bot.servers[server].channels;
 
     Object.keys(channels).forEach(function(key) {
         if(channels[key].name === vcName){
             bot.joinVoiceChannel(channels[key].id);
-            chan = channels[key].id;
-            vname = vcName;
-            
-            console.log("joined: "+chan);
-
-            setTimeout(function(){
-                play(chan, "hello");
-            }, 500);
         }
     });
 }
