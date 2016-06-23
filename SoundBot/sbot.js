@@ -79,7 +79,7 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
     }
 
     if(message == "$help"){
-        send_text(channelID, "Join voice channel: $join <voice channel name>\nLeave voice channel: $leave <voice channel name>\nDisconnect from server: $disconnect\nStop playing: $stop\nAdd a new mp3: $save <url.mp3> <name>\n\nPlay something: $play <Sound Title>\nSound Titles:\n" + sound_titles);
+        send_text(channelID, "Join voice channel: $join <voice channel name>\nLeave voice channel: $leave <voice channel name>\nDisconnect from server: $disconnect\nStop playing: $stop\nSound Count: $cnt\nAdd a new mp3: $save <url.mp3> <name>\n\nPlay something: $play <Sound Title>\nSound Titles:\n" + sound_titles);
     }
 
     //If you add a sound, update the help list. 
