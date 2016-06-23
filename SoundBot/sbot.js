@@ -194,7 +194,7 @@ function saveFile(url, name, channelID) {
             response.pipe(file);
             getSoundNames();
             send_text(channelID, "Saved mp3: " +name);
-            console.log("Saved mp3: " +name;
+            console.log("Saved mp3: " +name);
         }
         // Add timeout.
         request.setTimeout(12000, function () {
