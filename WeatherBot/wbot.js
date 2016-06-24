@@ -1,5 +1,4 @@
 //The original weather bot?
-//https://discordapp.com/oauth2/authorize?client_id=194535326402871296&scope=bot&permissions=0
 
 /*
 Bot that does various emotes as well as tells the weather. 

@@ -6,7 +6,6 @@ $join <voice channel name>
 $leave <voice channel name>
 $disconnect
 $stop
-$save <url.mp3> <name>
 $play <sound>
 $help
 
@@ -45,8 +44,10 @@ if(data!=null && data!=undefined){
     var user_id;
     var channelID;
     var guild_id;
+    var name;
 
     Object.keys(rawEvent["d"]).forEach(function(key) {
+
 
         if(key == "user_id"){
             user_id = data[key];
@@ -59,6 +60,9 @@ if(data!=null && data!=undefined){
         else if(key == "guild_id"){
             guild_id = data[key];
 
+        }
+        else if(key == "name"){
+            name = data[key];
         }
 
     });
