@@ -26,7 +26,7 @@ var bot = new Discord.Client({
 var chan; //Currently in this voice channel.
 var vname; // Current voice channel name
 var sound_titles = "";
-var sound_length = 0;
+//var sound_length = 0;
 var terminate = false;
 
 
@@ -85,7 +85,7 @@ if(data!=null && data!=undefined){
                     chan = channelID;
 
                     setTimeout(function(){
-                        play(chan, "hello");
+                        playLocal(chan, "hello");
                     }, 500);
 
                     console.log("joined: "+chan);
@@ -125,6 +125,8 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
 
     if (args[0] === "$play") {
 
+        //play(chan, message.substr(6, message.length));
+
         fs.stat("sounds/" + message.substr(6, message.length)+".mp3", function (err, stats) {
             if (err) {
                 console.log(err);
@@ -133,7 +135,7 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
             }
             else {
                 if (stats.isFile()) {
-                    play(chan, message.substr(6, message.length));
+                    playLocal(chan, message.substr(6, message.length));
                     console.log("Played " + message.substr(6, message.length) + " at " + chan);
                 }
             }
@@ -153,11 +155,28 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
     }
 
     if(message == "$help"){
-        send_text(channelID, "Join voice channel: $join <voice channel name>\nLeave voice channel: $leave <voice channel name>\nDisconnect from server: $disconnect\nStop playing: $stop\nSound Count: $cnt\nAdd a new mp3: $save <url.mp3> <name>\n\nPlay something: $play <Sound Title>\nSound Titles:\n" + sound_titles);
+        send_text(channelID, "Join voice channel: $join <voice channel name>\nLeave voice channel: $leave <voice channel name>\nDisconnect from server: $disconnect\nStop playing: $stop\n\nPlay something: $play <Sound Title>\nSound Titles:\n" + sound_titles);
+        //Add a new mp3: $save <url.mp3> <name>
+        //Remove a mp3: $rm <name>
+        //\nSound Count: $cnt
     }
 
-    //If you add a sound, update the help list. 
-    if(message.substr(0,5) == "$save" && bot.id != userID){
+    //Plays mp3 url
+    if(args[0] == "$playURL"){
+
+        if(args.length < 2){
+            send_text(channelID, "Too many arguments.");
+        }
+        else if(args[1].substr(args[1].length-4, args[1].length) != ".mp3"){
+            send_text(channelID, "URL needs to end with .mp3");
+        }
+        else{
+            playURL(chan,args[1]);
+        }
+    }
+
+    //If you add a sound, update the help list. Not Safe
+    /*if(args[0] == "$save" && bot.id != userID){
 
 
         if(args.length < 3){
@@ -173,16 +192,16 @@ bot.on('message', function(user, userID, channelID, message, rawEvent) {
             var name = buildString(args,2);
             saveFile(args[1], name, channelID);
         }
-    }
+    }*/
 
-    if(message.substr(0,3) == "$rm"){
+    /*if(args[0] == "$rm"){
         deleteSound(message.substr(4,message.length), channelID);
-    }
+    }*/
 
-    if(message == "$cnt"){
+    /*if(message == "$cnt"){
         getSoundNames();
         send_text(channelID, "Currently stored sounds: " + sound_length + "/200");
-    }
+    }*/
 });
 
 //Grabs all the sound names for use in help. Also keeps track of how many songs are in the song folder. 
@@ -199,7 +218,7 @@ function getSoundNames(){
 }
 
 //Unlinks the sound.
-function deleteSound(name, channelID){
+/*function deleteSound(name, channelID){
     fs.unlink('sounds/'+name+".mp3", function(err) {
        if (err) {
             send_text(channelID, "Sound not found");
@@ -210,7 +229,7 @@ function deleteSound(name, channelID){
        send_text(channelID, name+".mp3 has been deleted. "+"\nCurrently stored sounds: " + sound_length + "/200");
 
     });
-}
+}*/
 
 //Abstraction for bot sending text.
 function send_text(channelID, text_message){
@@ -222,14 +241,25 @@ function send_text(channelID, text_message){
 
 //Joins a specified voice channel.
 function join(channelID, vcName){
-    var server = bot.channels[channelID].guild_id;
-    var channels = bot.servers[server].channels;
+    //console.log(channelID);
+    try{
+        var server = bot.channels[channelID].guild_id;
+        var channels = bot.servers[server].channels;
 
-    Object.keys(channels).forEach(function(key) {
-        if(channels[key].name === vcName){
-            bot.joinVoiceChannel(channels[key].id);
-        }
-    });
+        if(server != undefined && server !=null){
+            Object.keys(channels).forEach(function(key) {
+                if(channels[key].name === vcName){
+                    bot.joinVoiceChannel(channels[key].id);
+                }
+        });
+    }
+
+    }
+    catch(err){
+        send_text(channelID, "Channel doesn't exist on this server.");
+    }
+
+
 }
 
 //Leaves a channel
@@ -249,7 +279,7 @@ function leave(channelID, vcName){
 }
 
 //Saves a new mp3 files into the
-function saveFile(url, name, channelID) {
+/*function saveFile(url, name, channelID) {
     var req;
     if (url.search("https") != -1) {
         req = require('https');
@@ -276,7 +306,7 @@ function saveFile(url, name, channelID) {
         console.log(`Got error: ${e.message}`);
         send_text(channelID, "Invalid url")
         });
-}
+}*/
 
 //Returns a built string from the split words.
 function buildString(args, start){
@@ -290,9 +320,10 @@ function buildString(args, start){
 
 
 //Plays something on stream.
-function play(chan, mp3FilePath){
+function playLocal(chan, mp3FilePath){
         bot.getAudioContext({ channel: chan, stereo: true}, function(stream) {
         stream.playAudioFile("sounds/"+mp3FilePath+".mp3"); //To start playing an audio file, will stop when it's done.
+        //stream.playAudioFile(mp3FilePath);
         //stream.stopAudioFile(); //To stop an already playing file
         /*stream.once('fileEnd', function() {
             //Do something now that file is done playing. This event only works for files.
@@ -309,4 +340,11 @@ function play(chan, mp3FilePath){
     //bot.getAudioContext(channelID, function(stream) {
         //...
     //});
+}
+
+//Plays url mp3
+function playURL(chan, URL){
+        bot.getAudioContext({ channel: chan, stereo: true}, function(stream) {
+        stream.playAudioFile(URL); //To start playing an audio file, will stop when it's done.
+    });
 }
